@@ -1,0 +1,5 @@
+<?php
+	
+	system("./att.sh");
+
+?>

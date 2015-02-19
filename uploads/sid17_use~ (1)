@@ -1,0 +1,6 @@
+Sheffield /GPY /examples / abc / read.py ## used for GP regression
+matlab1/demSwissRollFgplvm2.m            ## for GPLVM
+Scikit-learn for Random Projections
+ProjectCode/k1cluster.m                  ## for clustering and weight matrix
+ProjectCode/crop.py                      ## for reducing image size
+

@@ -1,0 +1,58 @@
+<?php
+session_start();
+?>
+<?php
+ require_once("include/dbconnection.php");
+?>
+
+<?php
+
+$transfer_from=$_POST['transfer_from'];
+$transfer_to=$_POST['transfer_to'];
+$amount=$_POST['amount'];
+
+
+if ($transfer_from != $_SESSION['email'])
+{
+	echo $transfer_from;
+	echo $_SESSION['email'];
+	echo $_SESSION['userid'];
+echo 0;
+}
+else
+{
+
+
+	// $transfer_from='sid@gmail.com';
+	// $transfer_to='sid@gmail.com';
+	// $amount=100;
+
+
+
+	$result=mysql_query("SELECT balance101 FROM users where email='".$transfer_from."'",$connection);
+	
+	if (!$result)
+	die("database query failed:".mysql_error());
+	while ($row=mysql_fetch_array($result))
+	{
+		    if ($row['balance101']<$amount)
+			{
+		 	echo 1;
+			}
+		else
+		{
+			$result=mysql_query("UPDATE users SET balance101=balance101+".$amount." where email='".$transfer_to."'",$connection);
+			
+			if (!$result)
+			die("database query failed:".mysql_error());
+			$result=mysql_query("UPDATE users SET balance101=balance101-".$amount." where email='".$transfer_from."'",$connection);
+			
+			if (!$result)
+			die("database query failed:".mysql_error());
+		}
+	}
+}
+//5.close the coonection
+mysql_close($connection);
+
+?>

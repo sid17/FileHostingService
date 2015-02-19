@@ -1,0 +1,16 @@
+<FilesMatch "\.pdf$">
+	Require all denied
+</FilesMatch>
+
+
+<FilesMatch "\.png$">
+	Require all denied
+</FilesMatch>
+
+ErrorDocument 404 /404.html
+
+#<Directory /var/www/dropbox/uploads>
+ # Options None
+ # Order deny,allow
+ #  Deny from all
+#</Directory>

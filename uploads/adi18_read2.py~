@@ -1,0 +1,89 @@
+import numpy as np
+import pylab as pb
+import GPy
+import math
+import scipy.io
+def crs_regress100(max_iters=1000, optimize=True, plot=True):
+    
+	#X=scipy.io.loadmat('input/onlypca.mat')['X']
+	#XTest=scipy.io.loadmat('input/onlypca.mat')['X'][3645:,:]
+	print "Program begins , load data"
+	#X=scipy.io.loadmat('Y1_rand')['Y1_rand']
+	#print "Test1 ! Clear"
+	#XTest=scipy.io.loadmat('Y_test1_rand')['Y_test1_rand']
+	#X=X[:3645,:]
+	X=scipy.io.loadmat('Result_3')['X_']
+	XTest=X[3645:,:]
+	X=X[:3645,:]
+	
+	Y=scipy.io.loadmat('ugp_03_z')['z']
+	Y1=Y[:3645,:]
+	Y1_test=Y[3645:,:]
+	#YTest=scipy.io.loadmat('Z_test.mat')['Z_test']
+	print "input shape(1)"
+	print Y1.shape
+	print "output shape(1)"
+	print X.shape
+	print "input shape(2)"
+	print Y1_test.shape
+	print "output shape(2)"
+	print XTest.shape
+	# #print Y.shape
+	# #print XTest.shape
+	# #print YTest.shape
+	m = GPy.models.GPRegression(Y1, X)
+	if optimize:
+		m.optimize(messages=True, max_iters=max_iters)
+	
+	Ypredict = m.predict(Y1_test)[0]
+	
+
+	scipy.io.savemat('ugp_0.13_predict_1.mat', mdict={'Ypredict': Ypredict})
+	#Ypredict=scipy.io.loadmat('ugp_0.13_predict')['Ypredict']
+	
+	np.save('ugp_0.13_model_1', m)
+	#np.load('ugp_0.13_model.npy')
+	if plot:
+	    print "function under construction"
+	diff=(XTest-Ypredict)
+	diff=abs(diff)
+	print diff
+	
+	#sse = (abs(YTest -Ypredict)).sum()
+	
+	#sse=sse/(YTest.shape[0]*YTest.shape[1])
+	
+	#print('Sum of absolute error on test data: ' + str(sse))
+	
+	
+	diff1=[]
+	for i in range(XTest.shape[0]):
+		sum_val=0
+		for j in range(XTest.shape[1]):
+			sum_val+=diff[i][j]
+		diff1.append((sum_val)/XTest.shape[1])
+	max1=max(diff1);
+	min1=min(diff1);
+	s1=sum(diff1)/XTest.shape[0];
+	var=0;
+	for i in range(XTest.shape[0]):
+		var+=(diff1[i]-s1)*(diff1[i]-s1)
+	var=var/(XTest.shape[0]-1);
+	var=math.sqrt(var);
+	#diff=YTest
+	sse = (abs(XTest -Ypredict)).sum()
+
+	
+	sse=sse/(XTest.shape[0]*XTest.shape[1])
+	
+	#print YTest.shape[0]*YTest.shape[1]
+	print('Sum of absolute error on test data: ' + str(sse))
+	print('Variance of absolute error on test data: ' + str(var))
+	print('Max of absolute error on test data: ' + str(max1))
+	print('Min of absolute error on test data: ' + str(min1))
+	
+	
+	
+	
+crs_regress100(max_iters=60, optimize=True, plot=False)
+
